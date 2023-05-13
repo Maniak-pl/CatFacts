@@ -9,4 +9,8 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="push_the_button">Push the button!</string>
+    <string name="get_fact">Get Fact</string>
+    <string name="an_error_occurred">An error occurred</string>
+    <string name="cat_icon">cat icon</string>
 </resources>
