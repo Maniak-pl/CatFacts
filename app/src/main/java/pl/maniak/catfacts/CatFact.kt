@@ -1,5 +1,3 @@
 package pl.maniak.catfacts
 
-data class CatFact(
-    val  text: String
-)
+data class CatFact(val text: String)

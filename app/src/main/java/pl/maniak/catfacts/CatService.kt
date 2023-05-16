@@ -3,7 +3,8 @@ package pl.maniak.catfacts
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface CatFactService {
+interface CatService {
+
     @GET("facts")
-    fun getFacts(): Call<Response>
+    fun getFacts(): Call<Response<List<CatFact>>>
 }

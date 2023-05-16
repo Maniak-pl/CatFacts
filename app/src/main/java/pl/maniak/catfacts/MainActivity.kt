@@ -1,37 +1,79 @@
 package pl.maniak.catfacts
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var retrofit: Retrofit
-    private lateinit var catService: CatFactService
+    private lateinit var catService: CatService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val moshi = Moshi.Builder().build()
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
 
-        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
+        val loggingInterceptor =
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .build()
 
         retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
+            .client(okHttpClient)
             .build()
 
-        catService = retrofit.create(CatFactService::class.java)
+        catService = retrofit.create(CatService::class.java)
 
+        val getFactButton = findViewById<Button>(R.id.getFactButton)
+        val loadingIndicator = findViewById<ProgressBar>(R.id.progressBar)
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val catFactView = findViewById<TextView>(R.id.catFactView)
+
+        getFactButton.setOnClickListener {
+            val call = catService.getFacts()
+            loadingIndicator.isVisible = true
+            getFactButton.isEnabled = false
+
+            call.enqueue(object : Callback<Response<List<CatFact>>> {
+                override fun onFailure(call: Call<Response<List<CatFact>>>, t: Throwable) {
+                    loadingIndicator.isVisible = false
+                    getFactButton.isEnabled = true
+                    errorView.isVisible = true
+                }
+
+                override fun onResponse(
+                    call: Call<Response<List<CatFact>>>,
+                    response: retrofit2.Response<Response<List<CatFact>>>
+                ) {
+                    loadingIndicator.isVisible = false
+                    getFactButton.isEnabled = true
+                    errorView.isVisible = false
+
+                    val randomInt = Random.nextInt(0, response.body()!!.all.size - 1)
+                    catFactView.text = response.body()!!.all[randomInt].text
+                }
+            })
+        }
     }
 
     companion object {
