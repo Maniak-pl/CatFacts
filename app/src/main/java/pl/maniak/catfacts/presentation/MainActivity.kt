@@ -1,4 +1,4 @@
-package pl.maniak.catfacts
+package pl.maniak.catfacts.presentation
 
 import android.os.Bundle
 import android.widget.Button
@@ -10,6 +10,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import pl.maniak.catfacts.data.CatService
+import pl.maniak.catfacts.R
+import pl.maniak.catfacts.data.api.CatFact
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
@@ -54,23 +57,23 @@ class MainActivity : AppCompatActivity() {
             loadingIndicator.isVisible = true
             getFactButton.isEnabled = false
 
-            call.enqueue(object : Callback<Response<List<CatFact>>> {
-                override fun onFailure(call: Call<Response<List<CatFact>>>, t: Throwable) {
+            call.enqueue(object : Callback<List<CatFact>> {
+                override fun onFailure(call: Call<List<CatFact>>, t: Throwable) {
                     loadingIndicator.isVisible = false
                     getFactButton.isEnabled = true
                     errorView.isVisible = true
                 }
 
                 override fun onResponse(
-                    call: Call<Response<List<CatFact>>>,
-                    response: retrofit2.Response<Response<List<CatFact>>>
+                    call: Call<List<CatFact>>,
+                    response: retrofit2.Response<List<CatFact>>
                 ) {
                     loadingIndicator.isVisible = false
                     getFactButton.isEnabled = true
                     errorView.isVisible = false
 
-                    val randomInt = Random.nextInt(0, response.body()!!.all.size - 1)
-                    catFactView.text = response.body()!!.all[randomInt].text
+                    val randomInt = Random.nextInt(0, response.body()?.size!!.minus(1))
+                    catFactView.text = response.body()?.get(randomInt)?.text
                 }
             })
         }
