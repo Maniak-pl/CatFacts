@@ -7,13 +7,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import pl.maniak.catfacts.R
 
-class MainActivity : AppCompatActivity() {
+class CatFactActivity : AppCompatActivity() {
 
     private lateinit var disposable: Disposable
 
