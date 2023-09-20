@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'pl.maniak.catfacts'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "pl.maniak.catfacts"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -31,8 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding true
+
+    viewBinding {
+        enabled true
     }
 }
 

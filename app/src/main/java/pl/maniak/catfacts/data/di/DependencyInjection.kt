@@ -2,21 +2,26 @@ package pl.maniak.catfacts.data.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.ww.roxie.BaseViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.maniak.catfacts.data.api.CatService
 import pl.maniak.catfacts.model.CatFactRepository
+import pl.maniak.catfacts.presentation.CatFactAction
+import pl.maniak.catfacts.presentation.CatFactState
+import pl.maniak.catfacts.presentation.CatFactUseCaseImpl
+import pl.maniak.catfacts.presentation.CatFactViewModel
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 interface DependencyInjection {
-    val catFactRepository: CatFactRepository
+    val catFactViewModel: BaseViewModel<CatFactAction, CatFactState>
 }
 
 class DependencyInjectionImpl: DependencyInjection {
 
-    override lateinit var catFactRepository: CatFactRepository
+    override val catFactViewModel: BaseViewModel<CatFactAction, CatFactState>
 
     init {
         val moshi = Moshi.Builder()
@@ -39,7 +44,9 @@ class DependencyInjectionImpl: DependencyInjection {
 
         val catService = retrofit.create(CatService::class.java)
 
-        catFactRepository = CatFactRepository(catService)
+        val catFactRepository = CatFactRepository(catService)
+        val catFactUseCase = CatFactUseCaseImpl(catFactRepository)
+        catFactViewModel = CatFactViewModel(catFactUseCase)
     }
 
     companion object {

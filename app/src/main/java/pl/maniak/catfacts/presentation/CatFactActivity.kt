@@ -1,49 +1,39 @@
 package pl.maniak.catfacts.presentation
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import pl.maniak.catfacts.R
+import pl.maniak.catfacts.databinding.ActivityCatFactBinding
 
 class CatFactActivity : AppCompatActivity() {
 
     private lateinit var disposable: Disposable
+    private lateinit var binding: ActivityCatFactBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityCatFactBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val getFactButton = findViewById<Button>(R.id.getFactButton)
-        val loadingIndicator = findViewById<ProgressBar>(R.id.progressBar)
-        val errorView = findViewById<TextView>(R.id.errorView)
-        val catFactView = findViewById<TextView>(R.id.catFactView)
+        val catFactViewModel = di.catFactViewModel
 
-        val catFactRepository = di.catFactRepository
-        getFactButton.setOnClickListener {
-            disposable = catFactRepository.getFact()
-                .toObservable()
-                .onErrorResumeNext(Observable.empty())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    loadingIndicator.isVisible = true
-                }
-                .doOnError {
-                    loadingIndicator.isVisible = false
-                    errorView.isVisible = true
-                }
-                .subscribe { fact ->
-                    loadingIndicator.isVisible = false
-                    catFactView.text = fact
-                    errorView.isVisible = false
-                }
+        catFactViewModel.observableState.observe(this) { state ->
+            renderState(binding, state)
+        }
+
+        binding.getFactButton.setOnClickListener {
+            catFactViewModel.dispatch(CatFactAction.GetFactButtonClicked)
+        }
+    }
+
+    private fun renderState(binding: ActivityCatFactBinding, state: CatFactState) {
+        with(state) {
+            if (catFact.isNotEmpty()) {
+                binding.catFactView.text = catFact
+            }
+            binding.progressBar.isVisible = loading
+            binding.errorView.isVisible = displayError
         }
     }
 
