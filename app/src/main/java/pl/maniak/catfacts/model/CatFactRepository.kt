@@ -9,9 +9,12 @@ class CatFactRepository(private val catService: CatService) {
     fun getFact(): Single<String> {
         return catService.getFacts()
             .map { list ->
-                val randomInt = Random.nextInt(0, list.size - 1)
+                val randomInt = if (list.size > 1) {
+                    Random.nextInt(0, list.size - 1)
+                } else {
+                    0
+                }
                 list[randomInt].text
-
             }
     }
 }

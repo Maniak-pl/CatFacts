@@ -19,7 +19,7 @@ interface DependencyInjection {
     val catFactViewModel: BaseViewModel<CatFactAction, CatFactState>
 }
 
-class DependencyInjectionImpl: DependencyInjection {
+class DependencyInjectionImpl(apiUrl: String): DependencyInjection {
 
     override val catFactViewModel: BaseViewModel<CatFactAction, CatFactState>
 
@@ -36,7 +36,7 @@ class DependencyInjectionImpl: DependencyInjection {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(apiUrl)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(okHttpClient)
@@ -47,9 +47,5 @@ class DependencyInjectionImpl: DependencyInjection {
         val catFactRepository = CatFactRepository(catService)
         val catFactUseCase = CatFactUseCaseImpl(catFactRepository)
         catFactViewModel = CatFactViewModel(catFactUseCase)
-    }
-
-    companion object {
-        private val BASE_URL = "https://cat-fact.herokuapp.com"
     }
 }

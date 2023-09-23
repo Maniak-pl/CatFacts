@@ -2,13 +2,14 @@ package pl.maniak.catfacts.presentation
 
 import android.app.Application
 import android.content.Context
+import pl.maniak.catfacts.R
 import pl.maniak.catfacts.data.di.DependencyInjection
 import pl.maniak.catfacts.data.di.DependencyInjectionImpl
 
 class App: Application() {
 
     val di: DependencyInjection by lazy {
-        DependencyInjectionImpl()
+        DependencyInjectionImpl(getString(R.string.api_url))
     }
 }
 
