@@ -6,12 +6,12 @@ import pl.maniak.catfacts.R
 import pl.maniak.catfacts.data.di.DependencyInjection
 import pl.maniak.catfacts.data.di.DependencyInjectionImpl
 
-class App: Application() {
+open class App : Application() {
 
-    val di: DependencyInjection by lazy {
+    open val di: DependencyInjection by lazy {
         DependencyInjectionImpl(getString(R.string.api_url))
     }
 }
 
 val Context.di: DependencyInjection
-get() = (this.applicationContext as App).di
+    get() = (this.applicationContext as App).di

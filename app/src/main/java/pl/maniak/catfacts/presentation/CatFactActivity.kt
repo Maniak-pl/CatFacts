@@ -31,6 +31,7 @@ class CatFactActivity : AppCompatActivity() {
                 binding.catFactView.text = catFact
             }
             binding.progressBar.isVisible = loading
+            binding.getFactButton.isEnabled = !loading
             binding.errorView.isVisible = displayError
         }
     }
