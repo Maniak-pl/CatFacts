@@ -2,9 +2,13 @@
 
 This is Udemy [Android Redux/MVI pattern. Tests. Dependency Injection.](https://www.udemy.com/course/android-mvi-pattern-tests-dependency-injection/)  training.
 
+<img src="screen/course.jpg" alt="Icon" /> 
+
 ## Getting Started
 
 Download the project from [Github](https://github.com/Maniak-pl/CatFacts), the updated branch is **master**
+
+[<img src="screen/icon.png" alt="Icon" width="15%" />](app/app-debug.apk)
 
 ### Dependencies
 
